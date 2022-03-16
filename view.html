@@ -1,5 +1,24 @@
+
 <h1>{{.Title}}</h1>
 
-<p>[<a href="/edit/{{.Title}}">edit</a>]</p>
+<p>
+    [<a href="/edit/{{.Title}}">edit</a>]
+</p>
 
-<div>{{printf "%s" .Body}}</div>
+<div id="text"></div>
+
+<script type="text/javascript">
+    let body = "{{ .Body }}";
+    body = body.substring(1);
+    body = body.substring(0,body.length-1);
+    body = body.split(" ").map(Number);
+
+    let bodyFinal = "";
+
+    for (let i = 0; i < body.length; i++) {
+            bodyFinal = bodyFinal.concat(String.fromCharCode(body[i]));
+    }
+
+    const text = document.getElementById("text")
+    text.innerHTML = bodyFinal
+</script>
