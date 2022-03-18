@@ -34,7 +34,6 @@ func makeHandler(fn func (http.ResponseWriter, *http.Request, string)) http.Hand
 func viewHandler(w http.ResponseWriter, r *http.Request, title string) {
     p, err := loadPage(title)
 
-
     if err != nil {
         http.Redirect(w,r, "/edit/"+title, http.StatusFound)
     }
@@ -66,6 +65,7 @@ func editHandler(w http.ResponseWriter, r *http.Request, title string) {
     if err != nil {
         p = &Page{Title: title}
     }
+
     renderTemplate(w, "edit", p)
 }
 
@@ -83,12 +83,6 @@ func saveHandler(w http.ResponseWriter, r *http.Request, title string) {
     http.Redirect(w, r, "/view/"+title, http.StatusFound)
 }
 
-func homePage(w http.ResponseWriter, r *http.Request, title string) {
-    p := &Page{Title: title, Body: []byte("home page")}
-
-    renderTemplate(w, "home", p)
-}
-
 func renderTemplate(w http.ResponseWriter, tmpl string, p *Page) {
     err := templates.ExecuteTemplate(w, tmpl+".html", p)
 
@@ -99,7 +93,9 @@ func renderTemplate(w http.ResponseWriter, tmpl string, p *Page) {
 
 
 func Run() {
-    http.HandleFunc("/", makeHandler(homePage))
+    fs := http.FileServer(http.Dir("./"))
+	http.Handle("/", fs)
+
     http.HandleFunc("/view/", makeHandler(viewHandler))
     http.HandleFunc("/edit/", makeHandler(editHandler))
     http.HandleFunc("/save/", makeHandler(saveHandler))
