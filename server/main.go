@@ -38,7 +38,6 @@ func makeHandler(fn func (http.ResponseWriter, *http.Request, string)) http.Hand
 func viewHandler(w http.ResponseWriter, r *http.Request, title string) {
     p, err := loadPage(title)
 
-
     if err != nil {
         http.Redirect(w,r, "/edit/"+title, http.StatusFound)
     }
@@ -89,7 +88,18 @@ func saveHandler(w http.ResponseWriter, r *http.Request, title string) {
 }
 
 func searchHandler(w http.ResponseWriter, r *http.Request) {
-    //Get the query from the URL
+    if r.URL.Query().Get("query") == "" {
+        //Render search.html
+        t, err := template.ParseFiles("search.html")
+
+        if err != nil {
+            http.Error(w, err.Error(), http.StatusInternalServerError)
+            return
+        }
+
+        t.Execute(w, nil)
+    }
+
     var query string = r.URL.Query().Get("query")
     search := utils.SearchWiki(query)
     fmt.Fprintf(w, "%s", search)

@@ -8,7 +8,7 @@ import (
 )
 
 func SearchWiki(query string) string {
-    cmd := exec.Command("find", "./wiki-files", "-name", "*" + query + ".md")
+    cmd := exec.Command("find", "./wiki-files", "-name", "*" + query + "*.md")
     out, err := cmd.Output()
 
     if err != nil {
