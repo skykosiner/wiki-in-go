@@ -89,7 +89,6 @@ func saveHandler(w http.ResponseWriter, r *http.Request, title string) {
 
 func searchHandler(w http.ResponseWriter, r *http.Request) {
     if r.URL.Query().Get("query") == "" {
-        //Render search.html
         t, err := template.ParseFiles("search.html")
 
         if err != nil {
@@ -98,6 +97,7 @@ func searchHandler(w http.ResponseWriter, r *http.Request) {
         }
 
         t.Execute(w, nil)
+        return
     }
 
     var query string = r.URL.Query().Get("query")
@@ -112,7 +112,6 @@ func renderTemplate(w http.ResponseWriter, tmpl string, p *Page) {
         http.Error(w, err.Error(), http.StatusInternalServerError)
     }
 }
-
 
 func Run() {
     fs := http.FileServer(http.Dir("./"))
